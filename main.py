@@ -1,43 +1,50 @@
-import time
-
-import autopy  # Install using "pip install autopy"
-import cv2
+import cv2  # pip install opencv-python
 import numpy as np
-import pyautogui
-import threading
+import pyautogui # pip install pyautogui]
+import autopy
 import HandTrackingModule as ht
+import keyboard
+import time
+import threading
 
 ### Variables Declaration
 
 pTime = 0  # Used to calculate frame rate
 width = 640  # Width of Camera
-height = 320  # Height of Camera
+height = 360  # Height of Camera
 frameR = 30  # Frame Rate
 smoothening = 10  # Smoothening Factor
 prev_x, prev_y = 0, 0  # Previous coordinates
 curr_x, curr_y = 0, 0  # Current coordinates
-is_pressed = False
+is_pressed = True
+is_paused = False
 pyautogui.FAILSAFE = False  # triggered from mouse moving to a corner of the screen
 
-cap = cv2.VideoCapture(0)  # Getting video feed from the webcam
+cap = cv2.VideoCapture(1)  # Getting video feed from the webcam
 cap.set(3, width)  # Adjusting size
 cap.set(4, height)
+print("Part 1.")
 
 detector = ht.handDetector(maxHands=1)  # Detecting one hand at max
 screen_width, screen_height = autopy.screen.size()  # Getting the screen size
 
 
 def check_pressed_state():
-    global is_pressed
+    global is_paused, is_pressed
+    is_paused = False
     while True:
-        if is_pressed:
+        if keyboard.is_pressed("]"):
+            is_paused = not is_paused
+            print("Mouse events paused" if is_paused else "Mouse events resumed")
+            time.sleep(0.2)
+        if not is_paused:
             pyautogui.mouseDown()
-        else:
-            pyautogui.mouseUp()
+        time.sleep(0.02)
 
 
 thread = threading.Thread(target=check_pressed_state)
 thread.start()
+print("Part 2.")
 
 
 while True:
@@ -60,7 +67,8 @@ while True:
             curr_y = prev_y + (y3 - prev_y) / smoothening
 
             # pyautogui.moveTo(screen_width - curr_x, curr_y)
-            autopy.mouse.move(screen_width - curr_x, curr_y)  # Moving the cursor
+            if not is_paused:
+                autopy.mouse.move(screen_width - curr_x, curr_y)  # Moving the cursor
             # pyautogui.dragTo(screen_width - curr_x, curr_y)
             cv2.circle(img, (x1, y1), 7, (255, 0, 255), cv2.FILLED)
             prev_x, prev_y = curr_x, curr_y
@@ -86,6 +94,7 @@ while True:
     pTime = cTime
     cv2.putText(img, str(int(fps)), (20, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
     cv2.imshow("Image", img)
+    cv2.setWindowProperty("Image", cv2.WND_PROP_TOPMOST, 1)
     cv2.waitKey(1)
 
 
