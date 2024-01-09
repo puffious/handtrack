@@ -1,5 +1,5 @@
-# Intense HandTracking
-bhaibandh khali ```pip install opencv-python autopy pyautogui``` kari devanu anne maja karvani.
+# HandTracking
+```pip install opencv-python autopy pyautogui```
 
 works with fruit ninja: https://poki.com/en/g/fruit-ninja and paint.
 
