@@ -20,7 +20,7 @@ is_pressed = True
 is_paused = False
 pyautogui.FAILSAFE = False  # triggered from mouse moving to a corner of the screen
 
-cap = cv2.VideoCapture(1)  # Getting video feed from the webcam
+cap = cv2.VideoCapture(0)  # Getting video feed from the webcam
 cap.set(3, width)  # Adjusting size
 cap.set(4, height)
 print("Part 1.")
