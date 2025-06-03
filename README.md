@@ -44,17 +44,10 @@ Position your hand in front of the webcam and use the following gestures:
    - **Start Drag (Mouse Down)**: Raise thumb and index finger and bring them close together.
    - **End Drag (Mouse Up)**: Raise middle and ring fingers while keeping index finger down.
 
-4. **Pause/Resume Control**: Press the "]" key to toggle pause/resume of mouse events.
-
-## Applications
-
-Works well with:
-- Games like Fruit Ninja: https://poki.com/en/g/fruit-ninja
-- Drawing applications like Paint
+4. **Exit Program**: Press any key while the webcam window is in focus.
 
 ## Notes
 
 - Make sure your hand is within the purple boundary box displayed on the screen for optimal tracking.
 - The frame rate (FPS) is displayed in the top-left corner of the window.
 - For best results, use in a well-lit environment with a clear background.
-- The application uses your default webcam (index 0).

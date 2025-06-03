@@ -1,6 +1,3 @@
+autopy
 opencv-python
 mediapipe
-numpy
-pyautogui
-autopy
-keyboard
