@@ -11,9 +11,9 @@ pTime = 0               # Used to calculate frame rate
 width = 640     # Width of Camera
 height = 320     # Height of Camera
 frameR = 60            # Frame Rate
-smoothening = 10   # Smoothening Factor
+smoothening = 8   # Smoothening Factor
 prev_x, prev_y = 0, 0   # Previous coordinates
-curr_x, curr_y = 0, 0   # Current coordinates
+curr_x, curr_y = 0, 0   # Current coordinates       
 is_pressed = False
 last_click_time = 0
 pyautogui.FAILSAFE = False #triggered from mouse moving to a corner of the screen
@@ -29,7 +29,7 @@ while True:
     img = detector.findHands(img)                       # Finding the hand
     lmlist, bbox = detector.findPosition(img)           # Getting position of hand
 
-    if len(lmlist) != 0:
+    if len(lmlist)!=0:
         x1, y1 = lmlist[8][1:]
         x2, y2 = lmlist[12][1:]
 
@@ -48,10 +48,8 @@ while True:
             cv2.circle(img, (x1, y1), 7, (255, 0, 255), cv2.FILLED)
             prev_x, prev_y = curr_x, curr_y
 
-
         if fingers[1] == 1 and fingers[2] == 1:     # If fore finger & middle finger both are up
             length, img, lineInfo = detector.findDistance(8, 12, img)
-
 
             if length < 40:     # If both fingers are really close to each other
                 cv2.circle(img, (lineInfo[4], lineInfo[5]), 15, (0, 255, 0), cv2.FILLED)
@@ -60,12 +58,16 @@ while True:
         if fingers[0] == 1 and fingers[1] == 1 and fingers[2] == 0:
             length = np.linalg.norm(np.array(lmlist[4][1:]) - np.array(lmlist[8][1:]))  # Optimized distance calculation
             if length < 40:  # Thumb and index close enough
-                pyautogui.mouseDown()
+                x3 = np.interp(x1, (frameR, width - frameR), (0, screen_width))
+                y3 = np.interp(y1, (frameR, height - frameR), (0, screen_height))
 
-        if fingers[2] == 1 and fingers[3] == 1 and fingers[1] == 0:
-            length = np.linalg.norm(np.array(lmlist[4][1:]) - np.array(lmlist[8][1:]))  # Optimized distance calculation
-            if length < 40:
-                pyautogui.mouseUp()
+                curr_x = prev_x + (x3 - prev_x) / smoothening
+                curr_y = prev_y + (y3 - prev_y) / smoothening
+
+                pyautogui.drag(screen_width - curr_x, curr_y)  # Moving the cursor # This is working only in fruit ninja - it is always keep the mouse clicked for the game
+                # pyautogui.dragTo(screen_width - curr_x, curr_y)
+                cv2.circle(img, (x1, y1), 7, (255, 0, 255), cv2.FILLED)
+                prev_x, prev_y = curr_x, curr_y
     cTime = time.time()
     fps = 1/(cTime-pTime)
     pTime = cTime
